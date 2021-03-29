@@ -1,4 +1,4 @@
-from fastapi_models import ConnectionParams
+from fastapi_models import ConnectionParams, SetDeviceDataParams
 import pyzkaccess
 import uvicorn
 from fastapi import FastAPI
@@ -8,6 +8,7 @@ from typing import Dict, Optional
 from fastapi import FastAPI
 from pydantic import BaseModel
 from pyzkaccess import ZKAccess, ZK100
+from pyzkaccess.data import TableName
 
 
 # TODO: see if there's a better way for this, maybe using an in-memory database?
@@ -70,6 +71,17 @@ def test_relay_unlock(handle: int):
             "status": "error",
             "message": str(e),
         }
+
+
+@app.get("/device_data")
+def get_device_data(handle: int, tablename: TableName):
+    data = connected_devices[handle].get_data(tablename)
+    return data
+
+
+@app.post("/device_data")
+def set_device_data(params: SetDeviceDataParams):
+    connected_devices[params.handle].set_data(params.tablename, params.data)
 
 
 if __name__ == "__main__":
