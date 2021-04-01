@@ -1,4 +1,5 @@
-from typing import Any, List, Mapping, Optional
+from typing import Any, Dict, List, Mapping, Optional
+from fastapi import Header
 
 from pydantic.main import BaseModel
 from pyzkaccess.data import TableName
@@ -15,12 +16,7 @@ class ConnectionParams(BaseModel):
         return f"protocol={self.protocol},ipaddress={self.ip_address},port={self.port},timeout={self.timeout},passwd={self.passwd}"
 
 
-class DeviceHandleParam(BaseModel):
-    handle: int
-
-
 class SetDeviceDataParams(BaseModel):
-    handle: int
     tablename: TableName
     data: List[Mapping[str, Any]]
 
