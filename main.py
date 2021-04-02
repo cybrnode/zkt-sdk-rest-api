@@ -55,11 +55,11 @@ async def zksdkerror_handler(request: Request, exc: pyzkaccess.exceptions.ZKSDKE
 
 
 @app.get("/")
-async def root():
+async def no_hello_world():
     return {"message": "No Hello World"}
 
 
-@app.post("/connect")
+@app.post("/devices/connect")
 def connect(connection_parameters: ConnectionParams):
     print(connection_parameters)
     connstr = str(connection_parameters)
@@ -82,37 +82,37 @@ def connect(connection_parameters: ConnectionParams):
 # TODO: research if there is a better way than specifying handle: int = Header(...) in every single request
 # TODO: research if there is a better way than specifying handle: int = Header(...) in every single request
 # TODO: research if there is a better way than specifying handle: int = Header(...) in every single request
-@app.post("/restart_device")
-def restart_device(handle: int = Header(...)):
+@app.post("/devices/{handle}/restart")
+def restart_device(handle):
     response = get_connected_device(handle).restart()
     return {"status": "success", "response": response}
 
 
-@app.post("/test_relay_unlock")
-def test_relay_unlock(handle: int = Header(...)):
+@app.post("/devices/{handle}/tests/relay/unlock")
+def test_relay_unlock(handle):
     response = get_connected_device(handle).relays.lock.switch_on(5)
     return {"status": "success", "response": response}
 
 
-@app.get("/device_data")
-def get_device_data(tablename: TableName, handle: int = Header(...)):
+@app.get("/devices/{handle}/data")
+def get_device_data(tablename: TableName, handle):
     data = get_connected_device(handle).get_data(tablename)
     return data
 
 
-@app.post("/device_data")
-def set_device_data(params: SetDeviceDataParams, handle: int = Header(...)):
+@app.post("/devices/{handle}/data")
+def set_device_data(params: SetDeviceDataParams, handle):
     get_connected_device(handle).set_data(params.tablename, params.data)
 
 
-@app.get("/users", response_model=List[User])
-def get_all_users(handle: int = Header(...)):
+@app.get("/devices/{handle}/users", response_model=List[User])
+def get_all_users(handle):
     all_users = get_connected_device(handle).get_users()
     return all_users
 
 
-@app.post("/users")
-def add_user(users: List[User], handle: int = Header(...)):  # TODO: see if there's a better way to only specify handle param once for the whole app
+@app.post("/devices/{handle}/users")
+def add_user(users: List[User], handle):  # TODO: see if there's a better way to only specify handle param once for the whole app
     get_connected_device(handle).add_users(users)
 
 
