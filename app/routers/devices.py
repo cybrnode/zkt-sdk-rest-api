@@ -2,11 +2,11 @@ from starlette.responses import HTMLResponse, JSONResponse
 from app.exceptions import DeviceNotConnectedException
 from typing import Any, Dict, List, Mapping
 
-from fastapi import APIRouter, WebSocket
+from fastapi import APIRouter
 
-from app.models import ConnectionParams, SetDeviceDataParams
+from app.models import ConnectionParams
 
-from pyzkaccess import ZKAccess, ZK100
+from pyzkaccess import ZKAccess
 import pyzkaccess
 from pyzkaccess.common import DeviceDataFilter
 from pyzkaccess.data import DeviceParametersEnum, TableName, User

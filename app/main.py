@@ -4,7 +4,6 @@ from app.exceptions import DeviceNotConnectedException
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 import pyzkaccess
-import uvicorn
 from fastapi import FastAPI
 from .routers import devices
 import time
@@ -61,7 +60,3 @@ async def zksdkerror_handler(request: Request, exc: pyzkaccess.exceptions.ZKSDKE
             "message": f"SDKError: {exc.msg}",
         },
     )
-
-
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
