@@ -7,7 +7,7 @@ a = Analysis(
     ["run_app.py"],
     pathex=["D:\\tmpwrok\\cybrnode\\zkt-sdk-rest-api"],
     binaries=[],
-    datas=[('plcommpro.dll', '.')],
+    datas=[('plcommpro.dll', 'app')],
     hiddenimports=[
         "uvicorn.logging",
         "uvicorn.loops",
