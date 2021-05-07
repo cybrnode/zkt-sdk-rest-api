@@ -1,3 +1,4 @@
+from fastapi import WebSocket
 from app.exceptions import DeviceNotConnectedException
 
 from starlette.requests import Request
@@ -6,11 +7,24 @@ import pyzkaccess
 import uvicorn
 from fastapi import FastAPI
 from .routers import devices
+import time
 
 app = FastAPI()
 
 
 app.include_router(devices.router)
+
+
+@app.websocket("/devices/{handle}/realtimelogs")
+async def realtime_logs(websocket: WebSocket, handle: int):
+    print("got realtimelogs")
+    await websocket.accept()
+    print("accepted websocket")
+    while True:
+        time.sleep(5)
+        logs = devices.get_connected_device(handle).sdk.get_rt_log(1024 * 1024 * 4)
+        print(logs)
+        [await websocket.send_text(log) for log in logs]
 
 
 @app.get("/")
@@ -23,6 +37,18 @@ async def no_connected_device_exception_handler(request: Request, exc: DeviceNot
     return JSONResponse(
         status_code=400,
         content={"message": f"No connected device found with the handle: {exc.handle}; maybe try /connect first?"},
+    )
+
+
+@app.exception_handler(Exception)
+async def uncaught_exceptions_handler(request: Request, exc: Exception):
+    raise exc
+    return JSONResponse(
+        status_code=500,
+        content={
+            "status": "error",
+            "message": str(exc),
+        },
     )
 
 
