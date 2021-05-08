@@ -3,11 +3,17 @@
 block_cipher = None
 
 
+def get_pull_sdk_dll_files_list():
+    from glob import glob
+
+    return glob("./pull_sdk/*.dll")
+
+
 a = Analysis(
     ["run_app.py"],
     pathex=["D:\\tmpwrok\\cybrnode\\zkt-sdk-rest-api"],
     binaries=[],
-    datas=[('plcommpro.dll', 'app')],
+    datas=[(dll_file, "app") for dll_file in get_pull_sdk_dll_files_list()],
     hiddenimports=[
         "uvicorn.logging",
         "uvicorn.loops",
@@ -43,5 +49,5 @@ exe = EXE(
     upx=True,
     upx_exclude=[],
     runtime_tmpdir=None,
-    console=False,
+    console=True,
 )
