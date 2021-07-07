@@ -41,7 +41,6 @@ async def no_connected_device_exception_handler(request: Request, exc: DeviceNot
 
 @app.exception_handler(Exception)
 async def uncaught_exceptions_handler(request: Request, exc: Exception):
-    raise exc
     return JSONResponse(
         status_code=500,
         content={
@@ -57,6 +56,6 @@ async def zksdkerror_handler(request: Request, exc: pyzkaccess.exceptions.ZKSDKE
         status_code=400,
         content={
             "status": "error",
-            "message": f"SDKError: {exc.msg}",
+            "message": str(exc),
         },
     )
